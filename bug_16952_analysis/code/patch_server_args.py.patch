@@ -1,0 +1,33 @@
+--- a/python/sglang/srt/server_args.py
++++ b/python/sglang/srt/server_args.py
+@@ -797,6 +797,30 @@ class ServerArgs:
+             logger.warning(
+                 f"Disable hybrid SWA memory for {model_arch} as it is not yet supported."
+             )
+             self.disable_hybrid_swa_memory = True
+ 
++        # Fix for Bug #16952: Auto-select flashinfer_cutedsl when TBO/SBO + DeepEP is enabled
++        if self.enable_two_batch_overlap or self.enable_single_batch_overlap:
++            if self.moe_a2a_backend == "deepep":
++                if self.moe_runner_backend == "auto" or self.moe_runner_backend is None:
++                    # Check if flashinfer_cutedsl is available
++                    try:
++                        from flashinfer.cute_dsl.blockscaled_gemm import grouped_gemm_nt_masked
++                        self.moe_runner_backend = "flashinfer_cutedsl"
++                        logger.info(
++                            "TBO/SBO is enabled with DeepEP. "
++                            "Automatically using flashinfer_cutedsl backend for overlap optimization."
++                        )
++                    except ImportError:
++                        raise RuntimeError(
++                            "TBO/SBO requires --moe-runner-backend flashinfer_cutedsl, "
++                            "but flashinfer_cutedsl is not available. "
++                            "Please install flashinfer with cutedsl support."
++                        )
++                elif self.moe_runner_backend != "flashinfer_cutedsl":
++                    raise RuntimeError(
++                        "TBO/SBO requires --moe-runner-backend flashinfer_cutedsl. "
++                        "Please use --moe-runner-backend flashinfer_cutedsl."
++                    )
++
+     def _handle_sampling_backend(self):

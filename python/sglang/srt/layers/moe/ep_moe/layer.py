@@ -13,6 +13,7 @@ from sglang.srt.layers.moe import (
     get_deepep_mode,
     get_moe_a2a_backend,
     get_moe_runner_backend,
+    is_tbo_enabled,
     should_use_flashinfer_trtllm_moe,
 )
 from sglang.srt.layers.moe.ep_moe.kernels import (
@@ -490,6 +491,13 @@ class DeepEPMoE(EPMoE):
             if get_moe_runner_backend().is_flashinfer_cutedsl():
                 return self.forward_flashinfer_cutedsl(
                     dispatch_output, down_gemm_overlap_args=down_gemm_overlap_args
+                )
+            # Fix for Bug #16952: Double-check to prevent using deprecated forward_deepgemm_masked
+            # when TBO/SBO is enabled
+            if down_gemm_overlap_args is not None or is_tbo_enabled():
+                raise RuntimeError(
+                    "TBO/SBO requires --moe-runner-backend flashinfer_cutedsl. "
+                    "Please use --moe-runner-backend flashinfer_cutedsl."
                 )
             assert deep_gemm_wrapper.ENABLE_JIT_DEEPGEMM and self.use_fp8_w8a8
             return self.forward_deepgemm_masked(dispatch_output)
