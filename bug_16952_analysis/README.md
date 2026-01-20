@@ -28,6 +28,23 @@
   - 问题描述和错误堆栈
   - 复现步骤和环境信息
 
+- **[A01_B04_recent_issues_analysis.md](./A01_B04_recent_issues_analysis.md)** ⭐ **近期 Issue 分析**
+  - 最近一个月 SGLang issue 统计
+  - MoE + CUDA Graph 高频故障确认
+  - 核心故障模式分析
+
+- **[A01_B05_learning_without_gpu.md](./A01_B05_learning_without_gpu.md)** ⭐ **无 GPU 学习指南**
+  - 不需要 GPU 的学习方法
+  - 代码层面分析
+  - 模拟和理解方法
+  - 学习路径建议
+
+- **[A01_B04_recent_issues_analysis.md](./A01_B04_recent_issues_analysis.md)** ⭐ **近期 Issue 分析**
+  - 最近一个月 SGLang issue 统计
+  - MoE + CUDA Graph 高频故障确认
+  - 核心故障模式分析
+  - 验证你的观察：MoE 和 Graph 确实很火
+
 ---
 
 ## 🎯 快速导航
@@ -36,6 +53,8 @@
 2. **想了解修复前后对比** → [A01_B01_fix_comparison.md](./A01_B01_fix_comparison.md)
 3. **想了解原始解决方案** → [A01_B02_original_solutions.md](./A01_B02_original_solutions.md)
 4. **想查看原始 Issue** → [A01_B03_original_issue.md](./A01_B03_original_issue.md)
+5. **想验证 MoE + Graph 是否真的很火** → [A01_B04_recent_issues_analysis.md](./A01_B04_recent_issues_analysis.md) ⭐ **最新分析**
+6. **没有 GPU 怎么学习？** → [A01_B05_learning_without_gpu.md](./A01_B05_learning_without_gpu.md) ⭐ **无 GPU 学习指南**
 
 ---
 
