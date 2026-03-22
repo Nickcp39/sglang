@@ -2977,6 +2977,22 @@ class ServerArgs:
                             "DeepSeek MTP does not require setting speculative_draft_model_path."
                         )
 
+            # MiniMax M2: an unset draft path falls back to the target checkpoint
+            # (see ModelConfig.from_server_args). There is no same-checkpoint MTP→draft
+            # remap like DeepSeek NextN, so EAGLE would load a second full MoE model and
+            # typically CUDA OOM (#20966). Require an explicit EAGLE draft repo.
+            if self.speculative_draft_model_path is None:
+                minimax_arch = self.get_model_config().hf_config.architectures[0]
+                if minimax_arch == "MiniMaxM2ForCausalLM":
+                    raise ValueError(
+                        "MiniMax M2 is not supported for EAGLE speculative decoding "
+                        "without --speculative-draft-model-path. "
+                        "When the draft path is omitted, the server loads a second full "
+                        "copy of the target weights, which usually causes CUDA OOM. "
+                        "Use a dedicated EAGLE draft checkpoint (for example "
+                        "togethercomputer/Aurora-Spec-Minimax-M2.5)."
+                    )
+
             if self.speculative_num_steps is None:
                 assert (
                     self.speculative_eagle_topk is None
